@@ -1,7 +1,8 @@
 from flask import Flask, request
 from flask import render_template
-import sqlite3
 from flask import g
+import sqlite3
+import pynmea2
 
 DATABASE = 'database.db'
 
@@ -48,6 +49,19 @@ def new_location():
         maxid = 1
     else:
         maxid +=1
+
+    if content.get('nmea', None) is not None:
+        try:
+            nmea = pynmea2.parse(content['nmea'])
+            print(f"nmea: {nmea}")
+            print(f"longitude, latitude: {nmea.longitude}, {nmea.latitude}")
+            if nmea.status == 'A':
+                content['location'] = [nmea.latitude, nmea.longitude]
+            else:
+                return 'Error parsing request data', 400
+        except:
+            return 'Error parsing request data', 400
+
     statement = f"""
         INSERT INTO locations VALUES
             ({maxid}, '{content['name']}', {content['location'][0]}, 
@@ -59,8 +73,6 @@ def new_location():
     get_db().commit()
     return ''
     
-    
-
 
 @app.teardown_appcontext
 def close_connection(exception):

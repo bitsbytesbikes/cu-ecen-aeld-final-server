@@ -41,7 +41,7 @@
                     var json_data = JSON.parse(this.responseText);
                     if(update_location){
                         if(locations.length == 0) {
-                            map.setView([40.0073169265153, -105.26595493260885],15);
+                            map.setView([40.0073169265153, -105.26595493260885],10);
                         }
                         else {
                             map.setView(json_data[0].location, 15);
@@ -64,9 +64,9 @@
                                 radius: 50
                             }).addTo(map);
                             var popupText = "<b>Name</b>:" + element.name + "<br/>";
-                            popupText += "<b>Temperature</b>: " + element.temperature+ "<br/>";
-                            popupText += "<b>Humidity</b>: " + element.humidity + "<br/>";
-                            popupText += "<b>Pressure</b>: " + element.pressure + "<br/>";
+                            popupText += "<b>Temperature</b>: " + element.temperature.toFixed(2) + " °C<br/>";
+                            popupText += "<b>Humidity</b>: " + element.humidity.toFixed(2) + " %RH<br/>";
+                            popupText += "<b>Pressure</b>: " + element.pressure.toFixed(2) + " hPa<br/>";
                             circle.bindPopup(popupText);
                         }
                     });
